@@ -27,6 +27,8 @@ from segmentation import (
 
 from evaluation import avaliar_mascara
 
+from fft_analysis import analisar_fft, comparar_visualizacoes_fft, visualizar_fase_fft
+
 def plotar_histogramas(
     imagem_espaco,
     mascaras,
@@ -511,5 +513,34 @@ fig.tight_layout(rect=[0, 0, 1, 0.97])
 plt.tight_layout()
 plt.show()
 
+analisar_fft(imagem)
 
+comparar_visualizacoes_fft(imagem)
 
+# imagem é uma imagem colorida no formato BGR
+cinza = cv2.cvtColor(imagem, cv2.COLOR_BGR2GRAY)
+
+# Calcula a FFT bidimensional
+fft = np.fft.fft2(cinza)
+
+# Centraliza as frequências
+fft_centralizada = np.fft.fftshift(fft)
+
+# Obtém a fase em radianos
+fase = np.angle(fft_centralizada)
+
+# Exibe o espectro de fase
+plt.figure(figsize=(7, 6))
+plt.imshow(
+    fase,
+    cmap="twilight",
+    vmin=-np.pi,
+    vmax=np.pi
+)
+plt.colorbar(label="Fase (radianos)")
+plt.title("Espectro de fase da imagem")
+plt.axis("off")
+plt.show()
+
+resultado = visualizar_fase_fft(imagem)
+print(resultado)
